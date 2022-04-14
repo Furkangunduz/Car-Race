@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cool Cars</title>
+        <link rel="stylesheet" href="./public/style.css" />
+    </head>
+    <body>
+        <div class="login">
+            <div class="">
+                <input type="text" placeholder="name" required id="name" />
+                <button id="start">Start Game</button>
+            </div>
+            <div class="cars">
+                <div class="card" id="left-card">
+                    <img src="./cars/blue-car.png" alt="car" id="blue-car" />
+                </div>
+                <div class="card" id="right-card">
+                    <img src="./cars/white-car.png" alt="car" id="white-car" />
+                </div>
+            </div>
+        </div>
+
+        <canvas></canvas>
+        <script
+            src="https://cdn.socket.io/4.4.1/socket.io.min.js"
+            integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H"
+            crossorigin="anonymous"
+        ></script>
+        <script src="socket.js"></script>
+        <script type="module" src="script.js"></script>
+        <script type="module" src="login.js"></script>
+    </body>
+</html>

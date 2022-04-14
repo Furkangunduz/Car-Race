@@ -13,8 +13,9 @@ export default class Car {
         this.angle = 0;
         this.speed = 0;
         this.maxSpeed = 15;
-        this.acc = 0.2;
+        this.acc = 0.3;
         this.direction = "forward";
+        this.firiction = 0.98;
     }
     draw() {
         if (this.x - this.carWidth / 2 <= 0) {
@@ -77,6 +78,8 @@ export default class Car {
         this.y += Math.sin((this.angle * Math.PI) / 180) * this.speed;
         this.drawName();
         this.draw();
+
+        this.speed *= this.firiction;
     }
     drawName() {
         this.ctx.font = "30px Arial";
