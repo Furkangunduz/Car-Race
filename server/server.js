@@ -11,10 +11,35 @@ const io = require("socket.io")(server, {
     },
 });
 
+var cars = []
+
 app.get("/", (req, res) => {
     res.send("Server on");
 });
 
 io.on("connection", (socket) => {
-    console.log("new connecion", socket.id);
+
+    console.log("new connection")
+    socket.on("connected", (car) => {
+        cars.push({ "id": socket.id, car })
+        socket.emit("id", socket.id)
+    })
+    socket.on("update", (x, y, speed, angle) => {
+        cars.forEach((car) => {
+            if (car.id == socket.id) {
+                car.car.x = x;
+                car.car.y = y;
+                car.car.speed = speed;
+                car.car.angle = angle;
+            }
+        })
+        socket.emit("updateFromServer", cars)
+    })
+    socket.on("disconnect", () => {
+        cars.forEach((car, indx) => {
+            if (car.id == socket.id) {
+                cars.splice(indx, 1)
+            }
+        })
+    })
 });
