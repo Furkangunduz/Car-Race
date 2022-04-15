@@ -1,6 +1,6 @@
-// const socket = io("http://localhost:3001");
-import Car from "./Car.js";
-import Bullet from "./Bullet.js"
+const socket = io("http://localhost:3001");
+// import Car from "./Car.js";
+import Bullet from "./Bullet.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -11,65 +11,102 @@ canvas.width = WIDTH;
 canvas.height = HEIGHT;
 const CARWIDTH = 150;
 const CARHEGIHT = 100;
+const carImg = "./cars/white-car.png";
 
 var carActions = new Set();
-var bullets = []
+var bullets = [];
 
-const mycar = new Car(
-    100,
-    100,
-    ctx,
-    "./cars/white-car.png",
-    "kralDragon",
-    CARWIDTH,
-    CARHEGIHT
-);
+class Car {
+    constructor(x, y, angle, ctx) {
+        this.x = x;
+        this.y = y;
+        this.playerName = "kraldragon";
+        this.ctx = ctx;
+        this.img = new Image();
+        this.img.src = carImg;
+        this.angle = angle;
+    }
+    draw() {
+        if (this.x - CARWIDTH / 2 <= 0) {
+            this.x = CARWIDTH / 2;
+        }
+        if (this.x >= WIDTH) {
+            this.x = WIDTH;
+        }
+        if (this.y - CARHEGIHT / 2 <= 0) {
+            this.y = CARHEGIHT / 2;
+        }
+        if (this.y >= HEIGHT) {
+            this.y = HEIGHT;
+        }
 
+        this.ctx.save();
+        this.ctx.translate(this.x, this.y);
+        this.ctx.rotate((Math.PI * this.angle) / 180);
+        this.ctx.drawImage(
+            this.img,
+            0 - CARWIDTH / 2,
+            0 - CARHEGIHT / 2,
+            CARWIDTH,
+            CARHEGIHT
+        );
+        this.ctx.restore();
+    }
 
+    drawName() {
+        this.ctx.font = "30px Arial";
+        this.ctx.fillText(
+            this.playerName,
+            this.x - CARWIDTH / 2 - 20,
+            this.y - CARHEGIHT
+        );
+    }
+}
 
-// socket.emit("connected", mycar)
+const mycar = new Car(100, 100, ctx, carImg);
+var allcars = [];
 
-// socket.on("id", (id) => {
-//     mycar.id = id
-// })
+socket.emit("connected", mycar.x, mycar.y, carImg);
 
+socket.on("UPDATED_DATA", (cars) => {
+    let newCars = [];
+    cars.forEach((i) => {
+        let car = new Car(i.car.x, i.car.y, i.car.angle, ctx);
+        newCars.push(car);
+    });
+    allcars = newCars;
+});
 
 animate();
 
 function animate() {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    bullets.forEach((bullet) => {
-        bullet.update();
-    })
-    mycar.update()
-    carActions.forEach((item) => {
-        if (item == "speedUp") {
-            mycar.speedUp();
-        } else if (item == "speedDown") {
-            mycar.speedDown();
-        } else if (item == "turnLeft") {
-            mycar.turnLeft();
-        } else if (item == "turnRight") {
-            mycar.turnRight();
-        }
-    });
-    // socket.emit("update", mycar.x, mycar.y, mycar.speed, mycar.angle)
-    // socket.on("updateFromServer", (cars) => {
-    //     cars.forEach((car) => {
-    //         let c = car.car
-    //         console.log(c.speed)
-    //         let carFromServer = new Car(c.x, c.y, ctx, c.src, c.name, c.angle, c.speed)
-    //         carFromServer.update();
-    //     })
-    // })
-    requestAnimationFrame(animate);
+    setInterval(() => {
+        ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+        bullets.forEach((bullet) => {
+            bullet.update();
+        });
+
+        allcars.forEach((car) => {
+            car.draw();
+            car.drawName();
+        });
+
+        carActions.forEach((item) => {
+            if (item == "speedUp") {
+                socket.emit("move", "speedUp");
+            } else if (item == "speedDown") {
+                socket.emit("move", "speedDown");
+            } else if (item == "turnLeft") {
+                socket.emit("move", "turnLeft");
+            } else if (item == "turnRight") {
+                socket.emit("move", "turnRight");
+            }
+        });
+    }, 1000 / 60);
 }
 
-function enemySpawner() {
-
-}
-
-
+function enemySpawner() {}
 
 //eventlisteners
 document.addEventListener("keydown", (e) => {
@@ -103,11 +140,19 @@ document.addEventListener("keyup", (e) => {
 
 const rect = canvas.getBoundingClientRect();
 canvas.addEventListener("click", () => {
-    let radian = mycar.angle * Math.PI / 180;
+    let radian = (mycar.angle * Math.PI) / 180;
     let velocity = {
         x: Math.cos(radian) * (10 + mycar.speed),
-        y: Math.sin(radian) * (10 + mycar.speed)
-
-    }
-    bullets.push(new Bullet(mycar.x + Math.cos(radian) * CARWIDTH / 2, mycar.y + Math.sin(radian) * CARHEGIHT / 2, 10, "red", velocity, ctx))
-})
+        y: Math.sin(radian) * (10 + mycar.speed),
+    };
+    bullets.push(
+        new Bullet(
+            mycar.x + (Math.cos(radian) * CARWIDTH) / 2,
+            mycar.y + (Math.sin(radian) * CARHEGIHT) / 2,
+            10,
+            "red",
+            velocity,
+            ctx
+        )
+    );
+});

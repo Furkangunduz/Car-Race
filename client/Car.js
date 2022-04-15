@@ -8,7 +8,7 @@ export default class Car {
         this.ctx = ctx;
         this.carWidth = carWidth;
         this.carHeight = carHeight;
-        this.src = src
+        this.src = src;
         this.img = new Image();
         this.img.src = this.src;
         this.angle = 0;
@@ -19,7 +19,6 @@ export default class Car {
         this.firiction = 0.98;
     }
     draw() {
-
         if (this.x - this.carWidth / 2 <= 0) {
             this.x = this.carWidth / 2;
         }
@@ -47,7 +46,6 @@ export default class Car {
     }
 
     speedUp() {
-
         this.speed = Math.min(
             this.maxSpeed,
             this.speed < 0
@@ -76,7 +74,6 @@ export default class Car {
     }
 
     update() {
-
         this.x += Math.cos((this.angle * Math.PI) / 180) * this.speed;
         this.y += Math.sin((this.angle * Math.PI) / 180) * this.speed;
         this.speed *= this.firiction;
