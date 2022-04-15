@@ -1,4 +1,4 @@
-const socket = io("http://localhost:3001");
+const socket = io("https://kdragonserver.herokuapp.com/");
 // import Car from "./Car.js";
 import Bullet from "./Bullet.js";
 
