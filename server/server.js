@@ -31,6 +31,9 @@ const updateInterval = setInterval(() => {
                 cars[cIndex].car.health -= 10;
             }
         });
+        if (car.car.health == 0) {
+            cars.splice(cIndex, 1)
+        }
         car.car.update();
     });
     bullets.forEach((bullet, bIndex) => {
@@ -70,7 +73,7 @@ const broadCastInterval = setInterval(() => {
     io.emit("UPDATED_CARS", cars);
     io.emit("UPDATED_BULLETS", bullets);
     io.emit("UPDATED_ENEMIES", enemies);
-}, 1000 / 500);
+}, 1000 / 60);
 
 spawnEnemies();
 
@@ -92,9 +95,8 @@ function spawnEnemies() {
             }
 
             const angle = Math.atan2(randomCar.y - y, randomCar.x - x);
-            let color = `rgb(${Math.random() * 255},${Math.random() * 255},${
-                Math.random() * 255
-            })`;
+            let color = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255
+                })`;
             let random = Math.random() * 3;
             var enemySpeed = random < 2 ? 2 : random;
             const velocity = {
@@ -108,8 +110,8 @@ function spawnEnemies() {
 }
 
 io.on("connection", (socket) => {
-    socket.on("connected", (x, y, img) => {
-        let car = new Car(x, y, img);
+    socket.on("connected", (x, y, img, name) => {
+        let car = new Car(x, y, img, name);
         cars.push({ id: socket.id, car });
     });
 

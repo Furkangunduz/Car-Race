@@ -1,12 +1,13 @@
 const data = require("./global_vars.js");
 
 class Car {
-    constructor(x, y, src) {
+    constructor(x, y, src, name) {
         this.x = x;
         this.y = y;
         this.angle = 0;
         this.speed = 0;
         this.src = src;
+        this.name = name;
         this.maxSpeed = 15;
         this.acc = 0.3;
         this.direction = "forward";
