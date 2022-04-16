@@ -1,6 +1,6 @@
 const socket = io("https://kdragonserver.herokuapp.com/");
 // import Car from "./Car.js";
-import Bullet from "./Bullet.js";
+// import Bullet from "../Bullet.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
