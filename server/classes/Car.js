@@ -8,6 +8,7 @@ class Car {
         this.speed = 0;
         this.name = name;
         this.src = src;
+        this.name = name;
         this.maxSpeed = 15;
         this.acc = 0.3;
         this.direction = "forward";

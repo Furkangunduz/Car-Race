@@ -6,7 +6,12 @@ import Bullet from "./Bullet.js";
 import data from "./global_vars.js";
 import Enemy from "./Enemy.js";
 
+<<<<<<< HEAD
 //login elements
+=======
+
+//login elements 
+>>>>>>> bc07264acb9fe4bf6e6fb040c0d783de0bf473f1
 const whiteCar = document.getElementById("white-car");
 const leftcard = document.getElementById("left-card");
 const rightcard = document.getElementById("right-card");
@@ -35,12 +40,20 @@ var allbullets = [];
 var allcars = [];
 var allenemies = [];
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bc07264acb9fe4bf6e6fb040c0d783de0bf473f1
 //this function calling from login js when player select car and write player name
 //then game will began
 function StartGame(carImgSrc, name) {
     const mycar = new Car(100, 100, 0, name, ctx, carImgSrc);
     socket.emit("connected", mycar.x, mycar.y, carImgSrc, name);
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bc07264acb9fe4bf6e6fb040c0d783de0bf473f1
 
 socket.on("UPDATED_CARS", (cars) => {
     let newCars = [];
@@ -158,7 +171,11 @@ userName.addEventListener("input", (e) => {
 startBtn.addEventListener("click", () => {
     if (selectedCar && playerName) {
         login.style.display = "none";
+<<<<<<< HEAD
         StartGame(selectedCar, playerName);
+=======
+        StartGame(selectedCar, playerName)
+>>>>>>> bc07264acb9fe4bf6e6fb040c0d783de0bf473f1
     }
 });
 
