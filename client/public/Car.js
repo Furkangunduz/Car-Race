@@ -1,7 +1,7 @@
 import data from "./global_vars.js";
 
 export default class Car {
-    constructor(x, y, angle, ctx, imgsrc) {
+    constructor(x, y, angle, ctx, imgsrc, health) {
         this.x = x;
         this.y = y;
         this.playerName = "kraldragon";
@@ -11,6 +11,7 @@ export default class Car {
         this.angle = angle;
         this.carWidth = data.CARWIDTH;
         this.carHeight = data.CARHEGIHT;
+        this.health = health;
     }
     draw() {
         if (this.x - this.carWidth / 2 <= 0) {
@@ -37,14 +38,30 @@ export default class Car {
             this.carHeight
         );
         this.ctx.restore();
+        this.drawName();
+        this.drawHealth();
     }
 
     drawName() {
-        this.ctx.font = "50px Arial";
+        this.ctx.save();
+        this.ctx.font = "70px Arial";
+        this.ctx.fillStyle = "black";
         this.ctx.fillText(
             this.playerName,
             this.x - this.carWidth / 2 - 20,
             this.y - (this.carHeight * 2) / 3
         );
+        this.ctx.restore();
+    }
+    drawHealth() {
+        this.ctx.save();
+        this.ctx.font = "normal 900 80px Unknown, monospace";
+        this.ctx.fillStyle = "black";
+        this.ctx.fillText(
+            this.health,
+            this.x - this.carWidth / 4,
+            this.y + this.carHeight
+        );
+        this.ctx.restore();
     }
 }

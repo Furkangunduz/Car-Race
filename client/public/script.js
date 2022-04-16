@@ -1,32 +1,41 @@
 // const socket = io("https://kdragonserver.herokuapp.com/");
+const socket = io("http://localhost:8888");
+
 import Car from "./Car.js";
 import Bullet from "./Bullet.js";
 import data from "./global_vars.js";
-
-const socket = io("http://localhost:3001");
+import Enemy from "./Enemy.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+const bg = new Image();
+bg.src = "./cars/bg3.jpeg";
 
 const WIDTH = data.WIDTH;
 const HEIGHT = data.HEIGHT;
 canvas.width = data.WIDTH;
 canvas.height = data.HEIGHT;
-
 const carImg = "./cars/white-car.png";
-
-const mycar = new Car(100, 100, 0, ctx, carImg);
 
 var carActions = new Set();
 var allbullets = [];
 var allcars = [];
+var allenemies = [];
 
+const mycar = new Car(100, 100, 0, ctx, carImg);
 socket.emit("connected", mycar.x, mycar.y, carImg);
 
 socket.on("UPDATED_CARS", (cars) => {
     let newCars = [];
     cars.forEach((i) => {
-        let car = new Car(i.car.x, i.car.y, i.car.angle, ctx, i.car.src);
+        let car = new Car(
+            i.car.x,
+            i.car.y,
+            i.car.angle,
+            ctx,
+            i.car.src,
+            i.car.health
+        );
         newCars.push(car);
     });
     allcars = newCars;
@@ -40,18 +49,30 @@ socket.on("UPDATED_BULLETS", (bullets) => {
     });
     allbullets = newbullets;
 });
+
+socket.on("UPDATED_ENEMIES", (enemies) => {
+    let newenemies = [];
+    enemies.forEach((i) => {
+        let enemy = new Enemy(i.x, i.y, i.radius, i.color, ctx);
+        newenemies.push(enemy);
+    });
+    allenemies = newenemies;
+});
+
 animate();
 
 function animate() {
     setInterval(() => {
         ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
+        ctx.drawImage(bg, 0, 0, WIDTH, HEIGHT);
         allcars.forEach((car) => {
             car.draw();
-            car.drawName();
         });
         allbullets.forEach((bullet) => {
             bullet.draw();
+        });
+        allenemies.forEach((enemy) => {
+            enemy.draw();
         });
         carActions.forEach((item) => {
             if (item == "speedUp") {
@@ -66,8 +87,6 @@ function animate() {
         });
     }, 1000 / 60);
 }
-
-function enemySpawner() {}
 
 //eventlisteners
 document.addEventListener("keydown", (e) => {

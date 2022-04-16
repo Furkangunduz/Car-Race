@@ -3,7 +3,7 @@ class Bullet {
         this.x = x;
         this.y = y;
         this.velocity = velocity;
-        this.radius = 10;
+        this.radius = 15;
     }
 
     update() {

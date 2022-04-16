@@ -13,6 +13,7 @@ class Car {
         this.firiction = 0.98;
         this.carWidth = data.CARWIDTH;
         this.carHeight = data.CARHEGIHT;
+        this.health = 100;
     }
 
     speedUp() {
