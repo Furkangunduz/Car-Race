@@ -11,6 +11,8 @@ body {
 canvas {
     background-color: rgba(255, 255, 255, 0.6);
     border: 1px solid black;
+    width: 800px;
+    height: 500px;
 }
 .login {
     display: none;
