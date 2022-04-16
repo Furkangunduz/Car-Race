@@ -3,6 +3,8 @@ const { Socket } = require("socket.io");
 const app = express();
 const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT);
+const Car = require("./classes/Car.js");
+const Bullet = require("./classes/Bullet.js");
 
 const io = require("socket.io")(server, {
     cors: {
@@ -11,96 +13,85 @@ const io = require("socket.io")(server, {
     },
 });
 
-class Car {
-    constructor(x, y, src) {
-        this.x = x;
-        this.y = y;
-        this.angle = 0;
-        this.speed = 0;
-        this.src = src;
-        this.maxSpeed = 15;
-        this.acc = 0.3;
-        this.direction = "forward";
-        this.firiction = 0.98;
-    }
-
-    speedUp() {
-        this.speed = Math.min(
-            this.maxSpeed,
-            this.speed < 0
-                ? (this.speed += this.acc * 2)
-                : (this.speed += this.acc)
-        );
-        this.direction = "forward";
-    }
-
-    speedDown() {
-        this.speed = Math.max(
-            -10,
-            this.speed > 0
-                ? (this.speed -= this.acc * 2)
-                : (this.speed -= this.acc)
-        );
-        this.direction = "backward";
-    }
-    turnLeft() {
-        if (this.direction == "forward") this.angle = (this.angle - 3) % 360;
-        else this.angle = (this.angle + 3) % 360;
-    }
-    turnRight() {
-        if (this.direction == "forward") this.angle = (this.angle + 3) % 360;
-        else this.angle = (this.angle - 3) % 360;
-    }
-
-    update() {
-        this.x += Math.cos((this.angle * Math.PI) / 180) * this.speed;
-        this.y += Math.sin((this.angle * Math.PI) / 180) * this.speed;
-        this.speed *= this.firiction;
-    }
-}
 var cars = [];
+var bullets = [];
+
+//for removing bullet which is not seeing on canvas
+const canvasWIDTH = 3000;
+const canvasHEIGHT = 3000;
 
 const updateInterval = setInterval(() => {
     cars.forEach((car) => {
         car.car.update();
     });
+    bullets.forEach((bullet, index) => {
+        if (
+            bullet.x + bullet.radius < 0 ||
+            bullet.x - bullet.radius > canvasWIDTH ||
+            bullet.y + bullet.radius < 0 ||
+            bullet.y - bullet.radius > canvasHEIGHT
+        ) {
+            bullets.splice(index, 1);
+        }
+
+        bullet.update();
+    });
 }, 1000 / 60);
 
 const broadCastInterval = setInterval(() => {
-    io.emit("UPDATED_DATA", cars);
-}, 1000 / 60);
+    io.emit("UPDATED_CARS", cars);
+    io.emit("UPDATED_BULLETS", bullets);
+}, 1000 / 500);
 
 io.on("connection", (socket) => {
     socket.on("connected", (x, y, img) => {
         let car = new Car(x, y, img);
         cars.push({ id: socket.id, car });
     });
+
+    socket.on("new_bullet", () => {
+        cars.forEach((data) => {
+            if (data.id === socket.id) {
+                let radian = (data.car.angle * Math.PI) / 180;
+                let bulletX =
+                    data.car.x + (Math.cos(radian) * data.car.carWidth) / 2;
+                let bulletY =
+                    data.car.y + (Math.sin(radian) * data.car.carHeight) / 2;
+                let velocity = {
+                    x: Math.cos(radian) * (10 + data.car.speed),
+                    y: Math.sin(radian) * (10 + data.car.speed),
+                };
+                bullets.push(new Bullet(bulletX, bulletY, velocity));
+            }
+        });
+    });
+
     socket.on("move", (move) => {
         if (move == "speedUp") {
-            cars.forEach((car) => {
-                if (car.id == socket.id) {
-                    car.car.speedUp();
+            cars.forEach((data) => {
+                if (data.id === socket.id) {
+                    data.car.speedUp();
                 }
             });
         }
         if (move == "speedDown") {
-            cars.forEach((car) => {
-                if (car.id == socket.id) {
-                    car.car.speedDown();
+            cars.forEach((data) => {
+                if (data.id === socket.id) {
+                    data.car.speedDown();
                 }
             });
         }
         if (move == "turnLeft") {
-            cars.forEach((car) => {
-                if (car.id == socket.id) {
-                    car.car.turnLeft();
+            cars.forEach((data) => {
+                if (data.id === socket.id) {
+                    data.car.turnLeft();
                 }
             });
         }
         if (move == "turnRight") {
-            cars.forEach((car) => {
-                if (car.id == socket.id) {
-                    car.car.turnRight();
+            cars.forEach((data) => {
+                if (data.id === socket.id) {
+                    data.car.turnRight();
                 }
             });
         }

@@ -1,5 +1,6 @@
 * {
     margin: 0;
+    background-color: black;
 }
 body {
     height: 100vh;
@@ -8,6 +9,7 @@ body {
     align-items: center;
 }
 canvas {
+    background-color: rgba(255, 255, 255, 0.6);
     border: 1px solid black;
 }
 .login {
