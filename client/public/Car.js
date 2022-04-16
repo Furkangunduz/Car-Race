@@ -1,10 +1,10 @@
 import data from "./global_vars.js";
 
 export default class Car {
-    constructor(x, y, angle, ctx, imgsrc, health) {
+    constructor(x, y, angle, name, ctx, imgsrc, health) {
         this.x = x;
         this.y = y;
-        this.playerName = "kraldragon";
+        this.playerName = name;
         this.ctx = ctx;
         this.img = new Image();
         this.img.src = imgsrc;
@@ -45,7 +45,7 @@ export default class Car {
     drawName() {
         this.ctx.save();
         this.ctx.font = "70px Arial";
-        this.ctx.fillStyle = "black";
+        this.ctx.fillStyle = "white";
         this.ctx.fillText(
             this.playerName,
             this.x - this.carWidth / 2 - 20,
@@ -55,12 +55,18 @@ export default class Car {
     }
     drawHealth() {
         this.ctx.save();
-        this.ctx.font = "normal 900 80px Unknown, monospace";
+        this.ctx.translate(this.x, this.y);
         this.ctx.fillStyle = "black";
-        this.ctx.fillText(
-            this.health,
-            this.x - this.carWidth / 4,
-            this.y + this.carHeight
+        this.ctx.fillRect(0 - this.carWidth / 2, this.carHeight / 2, 200, 50);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(this.x, this.y);
+        this.ctx.fillStyle = "red";
+        this.ctx.fillRect(
+            0 - this.carWidth / 2 + 10,
+            this.carHeight / 2 + 10,
+            18 * (this.health <= 0 ? 0 : this.health / 10),
+            30
         );
         this.ctx.restore();
     }

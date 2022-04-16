@@ -6,6 +6,20 @@ import Bullet from "./Bullet.js";
 import data from "./global_vars.js";
 import Enemy from "./Enemy.js";
 
+//login elements
+const whiteCar = document.getElementById("white-car");
+const leftcard = document.getElementById("left-card");
+const rightcard = document.getElementById("right-card");
+
+const blueCar = document.getElementById("blue-car");
+const userName = document.getElementById("name");
+const startBtn = document.getElementById("start");
+const login = document.querySelector(".login");
+//login elementss
+
+var selectedCar = "";
+var playerName = "";
+
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
 const bg = new Image();
@@ -15,15 +29,18 @@ const WIDTH = data.WIDTH;
 const HEIGHT = data.HEIGHT;
 canvas.width = data.WIDTH;
 canvas.height = data.HEIGHT;
-const carImg = "./cars/white-car.png";
 
 var carActions = new Set();
 var allbullets = [];
 var allcars = [];
 var allenemies = [];
 
-const mycar = new Car(100, 100, 0, ctx, carImg);
-socket.emit("connected", mycar.x, mycar.y, carImg);
+//this function calling from login js when player select car and write player name
+//then game will began
+function StartGame(carImgSrc, name) {
+    const mycar = new Car(100, 100, 0, name, ctx, carImgSrc);
+    socket.emit("connected", mycar.x, mycar.y, carImgSrc, name);
+}
 
 socket.on("UPDATED_CARS", (cars) => {
     let newCars = [];
@@ -32,6 +49,7 @@ socket.on("UPDATED_CARS", (cars) => {
             i.car.x,
             i.car.y,
             i.car.angle,
+            i.car.name,
             ctx,
             i.car.src,
             i.car.health
@@ -63,8 +81,11 @@ animate();
 
 function animate() {
     setInterval(() => {
-        ctx.clearRect(0, 0, WIDTH, HEIGHT);
         ctx.drawImage(bg, 0, 0, WIDTH, HEIGHT);
+        ctx.save();
+        ctx.fillStyle = "rgba(0,0,0,0.5)";
+        ctx.fillRect(-10, -10, WIDTH + 10, HEIGHT + 10);
+        ctx.restore();
         allcars.forEach((car) => {
             car.draw();
         });
@@ -118,7 +139,29 @@ document.addEventListener("keyup", (e) => {
     }
 });
 
-const rect = canvas.getBoundingClientRect();
+blueCar.addEventListener("click", (e) => {
+    if (!selectedCar) {
+        selectedCar = "./cars/blue-car.png";
+        leftcard.classList.add("selected");
+    }
+});
+whiteCar.addEventListener("click", (e) => {
+    if (!selectedCar) {
+        selectedCar = "./cars/white-car.png";
+        rightcard.classList.add("selected");
+    }
+});
+userName.addEventListener("input", (e) => {
+    playerName = e.target.value.slice(0, 7);
+});
+
+startBtn.addEventListener("click", () => {
+    if (selectedCar && playerName) {
+        login.style.display = "none";
+        StartGame(selectedCar, playerName);
+    }
+});
+
 canvas.addEventListener("click", () => {
     socket.emit("new_bullet");
 });

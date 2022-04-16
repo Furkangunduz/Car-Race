@@ -76,13 +76,13 @@ spawnEnemies();
 
 function spawnEnemies() {
     setInterval(() => {
-        if (cars.length >= 1) {
+        if (cars.length > 0) {
             let x;
             let y;
             let randomRadius = 100 * Math.random();
             let radius = randomRadius < 10 ? 50 : randomRadius;
-            let randomCar = cars[Math.random() * (cars.length - 1)].car;
-
+            let randomCar =
+                cars[Math.floor(Math.random() - 0.01 * cars.length)].car;
             if (Math.random() > 0.5) {
                 x = Math.random() < 0.5 ? 0 - radius : 3000 + radius;
                 y = Math.random() * 2000;
@@ -104,12 +104,12 @@ function spawnEnemies() {
             const enemy = new Enemy(x, y, radius, color, velocity);
             enemies.push(enemy);
         }
-    }, 1500);
+    }, 500);
 }
 
 io.on("connection", (socket) => {
-    socket.on("connected", (x, y, img) => {
-        let car = new Car(x, y, img);
+    socket.on("connected", (x, y, img, name) => {
+        let car = new Car(x, y, img, name);
         cars.push({ id: socket.id, car });
     });
 
