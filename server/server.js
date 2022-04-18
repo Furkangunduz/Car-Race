@@ -32,7 +32,7 @@ const updateInterval = setInterval(() => {
             }
         });
         if (car.car.health == 0) {
-            cars.splice(cIndex, 1)
+            cars.splice(cIndex, 1);
         }
         car.car.update();
     });
@@ -83,9 +83,8 @@ function spawnEnemies() {
             let x;
             let y;
             let randomRadius = 100 * Math.random();
-            let radius = randomRadius < 10 ? 50 : randomRadius;
-            let randomCar =
-                cars[Math.floor(Math.random() - 0.01 * cars.length)].car;
+            let radius = randomRadius < 50 ? 50 : randomRadius;
+            let randomCar = cars[Math.floor(Math.random() * cars.length)].car;
             if (Math.random() > 0.5) {
                 x = Math.random() < 0.5 ? 0 - radius : 3000 + radius;
                 y = Math.random() * 2000;
@@ -95,8 +94,9 @@ function spawnEnemies() {
             }
 
             const angle = Math.atan2(randomCar.y - y, randomCar.x - x);
-            let color = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255
-                })`;
+            let color = `rgb(${Math.random() * 255},${Math.random() * 255},${
+                Math.random() * 255
+            })`;
             let random = Math.random() * 3;
             var enemySpeed = random < 2 ? 2 : random;
             const velocity = {
@@ -106,7 +106,7 @@ function spawnEnemies() {
             const enemy = new Enemy(x, y, radius, color, velocity);
             enemies.push(enemy);
         }
-    }, 500);
+    }, 750);
 }
 
 io.on("connection", (socket) => {

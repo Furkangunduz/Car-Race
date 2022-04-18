@@ -56,7 +56,6 @@ export default class Car {
     drawHealth() {
         this.ctx.save();
         this.ctx.translate(this.x, this.y);
-<<<<<<< HEAD
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0 - this.carWidth / 2, this.carHeight / 2, 200, 50);
         this.ctx.restore();
@@ -68,25 +67,7 @@ export default class Car {
             this.carHeight / 2 + 10,
             18 * (this.health <= 0 ? 0 : this.health / 10),
             30
-=======
-        this.ctx.fillStyle = "black"
-        this.ctx.fillRect(
-            0 - this.carWidth / 2,
-            this.carHeight / 2,
-            200, 50
         );
         this.ctx.restore();
-        this.ctx.save();
-        this.ctx.translate(this.x, this.y);
-        this.ctx.fillStyle = "red"
-        this.ctx.fillRect(
-            0 - this.carWidth / 2 + 10,
-            this.carHeight / 2 + 10,
-            18 * (this.health <= 0 ? 0 : (this.health / 10)), 30
->>>>>>> bc07264acb9fe4bf6e6fb040c0d783de0bf473f1
-        );
-        this.ctx.restore();
-
-
     }
 }
