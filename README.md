@@ -7,7 +7,7 @@ Objective is escape the ball and shot them.
 Last player is the winner.
 
 <h3>-Controls-<h3>
- w-a-s-d (for control car)+ left mouse click(for throwing bullets)
+ w-a-s-d (for control car)+ space (for throwing bullets)
 
   
 <hr>
