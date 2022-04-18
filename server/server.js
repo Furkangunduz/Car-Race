@@ -32,7 +32,11 @@ const updateInterval = setInterval(() => {
             }
         });
         if (car.car.health == 0) {
-            cars.splice(cIndex, 1);
+            car.car.x = 100;
+            car.car.y = 100;
+            car.car.health = 100;
+            car.car.speed = 0;
+            car.car.angle = 0;
         }
         car.car.update();
     });
@@ -115,23 +119,6 @@ io.on("connection", (socket) => {
         cars.push({ id: socket.id, car });
     });
 
-    socket.on("new_bullet", () => {
-        cars.forEach((data) => {
-            if (data.id === socket.id) {
-                let radian = (data.car.angle * Math.PI) / 180;
-                let bulletX =
-                    data.car.x + (Math.cos(radian) * data.car.carWidth) / 2;
-                let bulletY =
-                    data.car.y + (Math.sin(radian) * data.car.carHeight) / 2;
-                let velocity = {
-                    x: Math.cos(radian) * (10 + data.car.speed),
-                    y: Math.sin(radian) * (10 + data.car.speed),
-                };
-                bullets.push(new Bullet(bulletX, bulletY, velocity));
-            }
-        });
-    });
-
     socket.on("move", (move) => {
         if (move == "speedUp") {
             cars.forEach((data) => {
@@ -158,6 +145,23 @@ io.on("connection", (socket) => {
             cars.forEach((data) => {
                 if (data.id === socket.id) {
                     data.car.turnRight();
+                }
+            });
+        }
+        if (move == "newBullet") {
+            cars.forEach((data) => {
+                if (data.id === socket.id) {
+                    let radian = (data.car.angle * Math.PI) / 180;
+                    let bulletX =
+                        data.car.x + (Math.cos(radian) * data.car.carWidth) / 2;
+                    let bulletY =
+                        data.car.y +
+                        (Math.sin(radian) * data.car.carHeight) / 2;
+                    let velocity = {
+                        x: Math.cos(radian) * (10 + data.car.speed),
+                        y: Math.sin(radian) * (10 + data.car.speed),
+                    };
+                    bullets.push(new Bullet(bulletX, bulletY, velocity));
                 }
             });
         }

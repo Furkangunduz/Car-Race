@@ -1,4 +1,4 @@
-// const socket = io("https://kdragonserver.herokuapp.com/");
+//const socket = io("https://kdragonserver.herokuapp.com/");
 const socket = io("http://localhost:8888");
 
 import Car from "./Car.js";
@@ -105,6 +105,9 @@ function animate() {
                 socket.emit("move", "turnLeft");
             } else if (item == "turnRight") {
                 socket.emit("move", "turnRight");
+            } else if (item == "newBullet") {
+                socket.emit("move", "newBullet");
+                carActions.delete("newBullet");
             }
         });
     }, 1000 / 60);
@@ -123,6 +126,9 @@ document.addEventListener("keydown", (e) => {
     }
     if (e.key === "d" || e.key === "D") {
         carActions.add("turnRight");
+    }
+    if (e.key === " ") {
+        carActions.add("newBullet");
     }
 });
 document.addEventListener("keyup", (e) => {
@@ -161,8 +167,4 @@ startBtn.addEventListener("click", () => {
         login.style.display = "none";
         StartGame(selectedCar, playerName);
     }
-});
-document.addEventListener("keydown", (e) => {
-    //detect space
-    if (e.key === " " && isGameStarted) socket.emit("new_bullet");
 });
